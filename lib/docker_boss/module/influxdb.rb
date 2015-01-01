@@ -77,6 +77,8 @@ class DockerBoss::Module::InfluxDB < DockerBoss::Module
     futures = containers.map { |c| @pool.future :sample_container, c }
 
     do_post! futures.map { |f| f.value }
+
+    DockerBoss.logger.debug "influxdb: Posted update."
   end
 
   class Error < StandardError
