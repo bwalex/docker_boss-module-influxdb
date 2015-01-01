@@ -43,7 +43,7 @@ class DockerBoss::Module::InfluxDB < DockerBoss::Module
   end
 
   def do_post!(data)
-    request = Net::HTTP::Post.new("/db/#{@config['database']}/series")
+    request = Net::HTTP::Post.new("/db/#{@config['database']}/series?time_precision=s")
     request.basic_auth @config['server']['user'], @config['server']['pass']
     request.add_field('Content-Type', 'application/json')
     request.body = data.to_json
@@ -77,8 +77,6 @@ class DockerBoss::Module::InfluxDB < DockerBoss::Module
     futures = containers.map { |c| @pool.future :sample_container, c }
 
     do_post! futures.map { |f| f.value }
-
-    DockerBoss.logger.debug "influxdb: Posted update."
   end
 
   class Error < StandardError
@@ -118,8 +116,7 @@ class DockerBoss::Module::InfluxDB < DockerBoss::Module
       {
         name:           "#{@config['prefix']}#{name}",
         columns:        data.keys,
-        points:         [ data.values ],
-        time_precision: 's'
+        points:         [ data.values ]
       }
     end
 
