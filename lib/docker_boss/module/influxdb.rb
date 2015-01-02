@@ -52,8 +52,6 @@ class DockerBoss::Module::InfluxDB < DockerBoss::Module
   end
 
   def run
-    test_connection!
-
     @timers.every(@config['interval']) { sample }
 
     Thread.new do
@@ -76,7 +74,19 @@ class DockerBoss::Module::InfluxDB < DockerBoss::Module
 
     futures = containers.map { |c| @pool.future :sample_container, c }
 
-    do_post! futures.map { |f| f.value }
+    data = futures.map { |f| f.value }
+
+    begin
+      do_post! data
+    rescue DockerBoss::Module::InfluxDB::Error => e
+      DockerBoss.logger.error "influxdb: Error posting update: #{e.message}"
+    rescue Net::OpenTimeout => e
+      DockerBoss.logger.error "influxdb: Error posting update: #{e.message}"
+    rescue Errno::ECONNREFUSED => e
+      DockerBoss.logger.error "influxdb: Error posting update: #{e.message}"
+    rescue SocketError => e
+      DockerBoss.logger.error "influxdb: Error posting update: #{e.message}"
+    end
   end
 
   class Error < StandardError
