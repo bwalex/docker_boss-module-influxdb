@@ -18,6 +18,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "docker_boss", "~> 0.1.4"
+  spec.add_dependency "celluloid", "~> 0.16.0"
+  spec.add_dependency "timers", "~> 4.0.1"
+
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
 end
