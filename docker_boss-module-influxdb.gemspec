@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "docker_boss", "~> 0.1.4"
+  spec.add_dependency "docker_boss", "~> 0.2.0"
   spec.add_dependency "celluloid", "~> 0.16.0"
   spec.add_dependency "timers", "~> 4.0.1"
 
